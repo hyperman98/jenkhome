@@ -6,7 +6,7 @@ pipeline {
     }
 
     environment {
-        REPO_CREDENTIALS = credentials('last_one') // Используйте ID ваших креденшалов
+        REPO_CREDENTIALS = credentials('last_one2') // Используйте ID ваших креденшалов
     }
 
     triggers {
@@ -22,7 +22,7 @@ pipeline {
 
         stage('Clone Repository') {
             steps {
-                git url: 'https://github.com/hyperman98/jenkins_homework.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
+                git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
             }
         }
         
