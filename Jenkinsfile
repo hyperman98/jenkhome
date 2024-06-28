@@ -1,44 +1,24 @@
 pipeline {
     agent any
-
-    parameters {
-        string(name: 'USER_NAME', defaultValue: 'World', description: 'Name to greet')
+    options {
+        skipStagesAfterUnstable()
     }
-
-    environment {
-        REPO_CREDENTIALS = credentials('last_one2') // Используйте ID ваших креденшалов
-    }
-
-    triggers {
-        cron('H/5 * * * *') // Запускать каждые 5 минут по расписанию
-    }
-
     stages {
-        stage('Clean Workspace') {
+        stage('Build') {
             steps {
-                cleanWs()
+                sh 'make'
             }
         }
-
-        stage('Clone Repository') {
+        stage('Test'){
             steps {
-                git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
+                sh 'make check'
+                junit 'reports/**/*.xml'
             }
         }
-        
-        stage('Print Greeting') {
+        stage('Deploy') {
             steps {
-                script {
-                    def greeting = "Hello ${params.USER_NAME}"
-                    writeFile file: 'result.txt', text: greeting
-                }
+                sh 'make publish'
             }
-        }
-    }
-
-    post {
-        always {
-            archiveArtifacts artifacts: 'result.txt', fingerprint: true
         }
     }
 }
