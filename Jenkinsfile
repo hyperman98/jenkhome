@@ -6,6 +6,9 @@ pipeline {
         JSON_FILE = "result.json"
         REPO_CREDENTIALS = credentials('last_one2') // Используйте ID ваших креденшалов
     }
+    triggers {
+        pollSCM('H/5 * * * *')
+    }
     stages {
         stage('Clean Workspace') {
             steps {
