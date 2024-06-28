@@ -24,13 +24,6 @@ pipeline {
                     def jenkinsVersion = sh(script: 'curl -sI ${JENKINS_URL} | grep "X-Jenkins:" | awk \'{print $2}\'', returnStdout: true).trim()
                     def jobName = env.JOB_NAME
                     def buildNumber = env.BUILD_NUMBER
-        
-                    def result = [
-                        JENKINS_URL: env.JENKINS_URL,
-                        JENKINS_VERSION: jenkinsVersion,
-                        JOB_NAME: jobName,
-                        BUILD_NUMBER: buildNumber
-                    ]
                     
                      // Создаем JSON вручную с помощью shell команды
                     sh """
