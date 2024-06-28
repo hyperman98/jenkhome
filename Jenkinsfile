@@ -21,8 +21,7 @@ pipeline {
         stage('Print Greeting') {
             steps {
                 script {
-                    def jenkinsInstance = Jenkins.instance
-                    def jenkinsVersion = jenkinsInstance.getVersion().toString()
+                    def jenkinsVersion = sh(script: 'curl -sI ${JENKINS_URL} | grep "X-Jenkins:" | awk \'{print $2}\'', returnStdout: true).trim()
                     def jobName = env.JOB_NAME
                     def buildNumber = env.BUILD_NUMBER
         
