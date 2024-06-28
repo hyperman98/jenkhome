@@ -4,25 +4,26 @@ pipeline {
         skipStagesAfterUnstable()
     }
     environment {
+        REPO_CREDENTIALS = credentials('last_one2')
         JENKINS_URL = "http://91.224.87.113:8080/"
         JSON_FILE = "result.json"
     }
     stages {
-        stage('Build') {
+        stage('Clean Workspace') {
             steps {
-                sh 'make'
+                cleanWs()
             }
         }
-        stage('Test'){
+
+        stage('Clone Repository') {
             steps {
-                sh 'make check'
-                junit 'reports/**/*.xml'
+                git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
             }
         }
         stage('Deploy') {
             steps {
                 sh 'make publish'
-            }
+            }ho
         }
     }
 }
