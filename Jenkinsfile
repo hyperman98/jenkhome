@@ -1,48 +1,44 @@
 pipeline {
-    agent { label 'default' }
-    options {
-        skipStagesAfterUnstable()
+    agent {label: "default"}
+
+    parameters {
+        string(name: 'USER_NAME', defaultValue: 'World', description: 'Name to greet')
     }
+
     environment {
-        REPO_CREDENTIALS = credentials('last_one2')
-        JENKINS_URL = "http://91.224.87.113:8080/"
-        JSON_FILE = "result.json"
+        REPO_CREDENTIALS = credentials('last_one2') // Используйте ID ваших креденшалов
     }
+
+    triggers {
+        cron('H/5 * * * *') // Запускать каждые 5 минут по расписанию
+    }
+
     stages {
+        stage('Clean Workspace') {
+            steps {
+                cleanWs()
+            }
+        }
+
         stage('Clone Repository') {
             steps {
                 git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
             }
         }
-        stage('Build file') {
+        
+        stage('Print Greeting') {
             steps {
                 script {
-                    // Получаем информацию о Jenkins
-                    def jenkinsInstance = Jenkins.instance
-                    def jenkinsVersion = jenkinsInstance.getVersion().toString()
-                    def jobName = env.JOB_NAME
-                    def buildNumber = env.BUILD_NUMBER
-
-                    // Создаем JSON-объект
-                    def buildInfo = [
-                        JENKINS_URL: env.JENKINS_URL,
-                        JENKINS_VERSION: jenkinsVersion,
-                        JOB_NAME: jobName,
-                        BUILD_NUMBER: buildNumber
-                    ]
-
-                    // Преобразуем JSON-объект в строку
-                    def json = new groovy.json.JsonBuilder(buildInfo).toPrettyString()
-
-                    // Записываем JSON-строку в файл
-                    writeFile file: env.JSON_FILE, text: json
+                    def greeting = "Hello ${params.USER_NAME}"
+                    writeFile file: 'result.txt', text: greeting
                 }
             }
         }
     }
+
     post {
         always {
-            archiveArtifacts artifacts: 'result.json', fingerprint: true
+            archiveArtifacts artifacts: 'result.txt', fingerprint: true
         }
     }
 }
