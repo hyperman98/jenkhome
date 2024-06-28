@@ -10,7 +10,7 @@ pipeline {
         GIT_REPO = "https://github.com/hyperman98/jenkhome.git"
     }
     stages {
-        stage('Clean Workspace') {
+        stage('Build file') {
             steps {
                 script {
                     // Получаем информацию о Jenkins
