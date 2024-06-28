@@ -21,21 +21,27 @@ pipeline {
         stage('Print Greeting') {
             steps {
                 script {
-                    //def jenkinsInstance = Jenkins.instance
-                    //def jenkinsVersion = jenkinsInstance.getVersion().toString()
+                    def jenkinsInstance = Jenkins.instance
+                    def jenkinsVersion = jenkinsInstance.getVersion().toString()
                     def jobName = env.JOB_NAME
                     def buildNumber = env.BUILD_NUMBER
-                    
+        
                     def result = [
                         JENKINS_URL: env.JENKINS_URL,
-                        //JENKINS_VERSION: jenkinsVersion,
+                        JENKINS_VERSION: jenkinsVersion,
                         JOB_NAME: jobName,
                         BUILD_NUMBER: buildNumber
                     ]
                     
-                    def json = new groovy.json.JsonBuilder(result).toPrettyString()
-
-                    writeFile file: env.JSON_FILE, text: json
+                     // Создаем JSON вручную с помощью shell команды
+                    sh """
+                    echo '{
+                      "JENKINS_URL": "${env.JENKINS_URL}",
+                      "JENKINS_VERSION": "${jenkinsVersion}",
+                      "JOB_NAME": "${jobName}",
+                      "BUILD_NUMBER": "${buildNumber}"
+                    }' > ${env.JSON_FILE}
+                    """
                 }
             }
         }
