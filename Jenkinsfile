@@ -7,9 +7,13 @@ pipeline {
         REPO_CREDENTIALS = credentials('last_one2')
         JENKINS_URL = "http://91.224.87.113:8080/"
         JSON_FILE = "result.json"
-        GIT_REPO = "https://github.com/hyperman98/jenkhome.git"
     }
     stages {
+        stage('Clone Repository') {
+            steps {
+                git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
+            }
+        }
         stage('Build file') {
             steps {
                 script {
@@ -35,11 +39,10 @@ pipeline {
                 }
             }
         }
-
-        stage('Clone Repository') {
-            steps {
-                git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
-            }
+    }
+    post {
+        always {
+            archiveArtifacts artifacts: 'result.json', fingerprint: true
         }
     }
 }
