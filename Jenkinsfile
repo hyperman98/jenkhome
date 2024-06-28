@@ -35,7 +35,6 @@ pipeline {
                     
                     def json = new groovy.json.JsonBuilder(result).toPrettyString()
 
-                    // Записываем JSON-строку в файл
                     writeFile file: env.JSON_FILE, text: json
                 }
             }
