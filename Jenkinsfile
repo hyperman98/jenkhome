@@ -41,10 +41,5 @@ pipeline {
                 git url: 'https://github.com/hyperman98/jenkhome.git', branch: 'main', credentialsId: "${REPO_CREDENTIALS}"
             }
         }
-        stage('Deploy') {
-            steps {
-                sh 'make publish'
-            }ho
-        }
     }
 }
